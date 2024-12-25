@@ -1,48 +1,46 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
 import { get } from 'http';
 import { TasksService } from './tasks.service';
-import { Task, TaskStatus } from './task.model';
+// import { Task, TaskStatus } from './task.model';
 import { CreateTaskDTO } from './dto/create-task.dto';
 import { query } from 'express';
 import { SearchFilterDTO } from './dto/search-filter.dto';
+import { Task } from './task.entity';
+import { TaskStatus } from './task.status.enum';
 
 @Controller('tasks')
 export class TasksController {
   constructor(private taskService: TasksService) {}
 
   @Get()
-  getTasks(@Query() filterDTO:SearchFilterDTO): Task[] {
+  async getTasks(@Query() filterDTO:SearchFilterDTO):Promise< Task[]> {
     
    if(Object.keys(filterDTO).length)
     {
-   return this.taskService.getTasksByFilter(filterDTO)
+   return (await this.taskService.filterTasks(filterDTO))
    }else{
-    return this.taskService.getAllTasks();
+    return await this.taskService.getTasks();
    }
   }
   @Get('/:id')
-  getTaskById(@Param('id') id:string): Task {
-    return this.taskService.getTaskById(id);
+ async getTaskById(@Param('id') id:string): Promise<Task> {
+    return await this.taskService.getTaskById(id);
   }
  
   @Post()
-  createTask(@Body() body: CreateTaskDTO): Task {
-    return this.taskService.createTask(body);
+  async createTask(@Body() body: CreateTaskDTO): Promise<Task> {
+    return (await this.taskService.createTask(body));
   }
 
-  @Put('/:id')
-  editItem(@Param('id') id:string){
-
-  }
   @Patch('/:id/status')
-  editTask(@Param('/id')id:string,
-  @Body('status') status:TaskStatus) {
+ async editTask(@Param('/id')id:string,
+  @Body('status') status:TaskStatus):Promise<Task> {
    
-    return this.taskService.updateStatus(id,status)
+    return (await this.taskService.updateStatus(id,status))
   }
   
   @Delete('/:id')
-  deleteTask(@Param('id') id:string) {
-    return this.taskService.deleteTask(id);
+ async deleteTask(@Param('id') id:string) {
+    return (await this.taskService.deleteTask(id));
   }
 }
