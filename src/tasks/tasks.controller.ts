@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { get } from 'http';
 import { TasksService } from './tasks.service';
 // import { Task, TaskStatus } from './task.model';
@@ -7,24 +7,21 @@ import { query } from 'express';
 import { SearchFilterDTO } from './dto/search-filter.dto';
 import { Task } from './task.entity';
 import { TaskStatus } from './task.status.enum';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('tasks')
+@UseGuards(AuthGuard())
 export class TasksController {
   constructor(private taskService: TasksService) {}
 
   @Get()
   async getTasks(@Query() filterDTO:SearchFilterDTO):Promise< Task[]> {
     
-   if(Object.keys(filterDTO).length)
-    {
    return (await this.taskService.filterTasks(filterDTO))
-   }else{
-    return await this.taskService.getTasks();
-   }
   }
   @Get('/:id')
  async getTaskById(@Param('id') id:string): Promise<Task> {
-    return await this.taskService.getTaskById(id);
+    return (await this.taskService.getTaskById(id));
   }
  
   @Post()

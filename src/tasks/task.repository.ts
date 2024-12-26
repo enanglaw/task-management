@@ -61,19 +61,23 @@ export class TaskRepository{
                       }
                     }
         async filterTasks(filterDTO: SearchFilterDTO): Promise<Task[]> {
-          const { status, search } = filterDTO;
-          const query=this.repository.createQueryBuilder('task')
-         
-          if (status) {
-            //tasks = tasks.filter((task) => task.status === status);
-            query.andWhere('task.status =:status',{status})
-          if (search) {
-            query.andWhere('LOWER(task.title) LIKE LOWER( :search) OR LOWER(task.description) LIKE LOWER(:search)',{search:`%{search}%`})
-            
-          }
-         let tasks = query.getMany(); 
-          return tasks;
-        }
+            const { status, search } = filterDTO;
+
+            const query = this.repository.createQueryBuilder('task');
+        
+            if (status) {
+              query.andWhere('task.status = :status', { status });
+            }
+        
+            if (search) {
+              query.andWhere(
+                'LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search)',
+                { search: `%${search}%` },
+              );
+            }
+        
+            const tasks = await query.getMany();
+            return tasks;
        
         }
 

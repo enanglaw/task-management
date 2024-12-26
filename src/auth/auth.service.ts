@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthCredentialDTO } from './dto/auth.credential.dto';
 import { UserRepository } from './user.repository';
 import*as bcrypt from 'bcrypt'
+import { ApiResponseDTO } from './dto/api.response.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +14,7 @@ export class AuthService {
         return this.userRepository.createUser(authCredentialDTO);
       
     }
-    async signIn(authCredentialDTO:AuthCredentialDTO):Promise<string>{
+    async signIn(authCredentialDTO:AuthCredentialDTO):Promise<ApiResponseDTO>{
     return this.userRepository.signIn(authCredentialDTO);
     }
 }
