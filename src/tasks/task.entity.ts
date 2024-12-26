@@ -9,11 +9,7 @@ export class Task{
         title:string
         @Column()
         description:string
-        @Column()
-        startDate:Date
-        @Column({ nullable: true })
-        endDate:Date
-        @Column()
+       
         createdDate:Date
         @Column()
         status:TaskStatus
